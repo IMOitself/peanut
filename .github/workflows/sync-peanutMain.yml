@@ -11,22 +11,17 @@ jobs:
             - name: clone peanut 
               uses: actions/checkout@v4
     
-            - name: navigate to parent folder
-              run:
-                cd ..
-
             - name: clone peanutMain
               uses: actions/checkout@v4
               with:
                 repository: IMOitself/peanutMain
                 path: peanutMain
 
-            - name: check folders
+            - name: navigate to peanutMain
               run: |
                 cd peanutMain
                 pwd
-                echo ""
-                cd ..
-                pwd
-                ls
+                ls -a
+                git status
+
               
