@@ -8,5 +8,9 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - run: cd ./app/src/main
-            - run: pwd
+            - uses: actions/checkout@v4
+    
+            - name: navigate to 
+              run:
+                cd ./app/src/main
+                pwd
