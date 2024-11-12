@@ -10,26 +10,16 @@ jobs:
         steps:
             - name: clone peanut 
               uses: actions/checkout@v4
-              with:
-                path: ./peanut
     
             - name: clone peanutMain
               uses: actions/checkout@v4
               with:
                 repository: IMOitself/peanutMain
-                path: ./peanutMain
+                path: peanutMain
 
             - name: check folders
               run: |
-                cd
+                cd peanutMain
                 pwd
-                echo ":"
-                ls
-
-                echo ""
- 
-                cd work
-                pwd
-                echo ":"
                 ls
               
