@@ -10,7 +10,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
     
-            - name: navigate to 
-              run:
+            - name: navigate to main folder
+              run: |
                 cd ./app/src/main
                 pwd
