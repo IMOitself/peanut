@@ -14,3 +14,9 @@ jobs:
               run: |
                 cd ./app/src/main
                 pwd
+            
+            - name: check outside folder
+              run: |
+                cd
+                pwd
+                ls
