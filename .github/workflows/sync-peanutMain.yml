@@ -2,7 +2,9 @@ name: Sync to peanutMain
 
 on:
     push:
-        branches: [master, auto]
+        branches: [master]
+        paths:
+          - 'app/src/main/**'  # Only trigger on changes in this directory
 
 jobs:
     build:
@@ -13,16 +15,6 @@ jobs:
               with:
                 fetch-depth: 0
 
-            - name: get necessary variables
-              run: |
-                # Get the number of commits in this push
-                EVENTS_BEFORE=${{ github.event.before }}
-                EVENTS_AFTER=${{ github.event.after }}
-                COMMITS_COUNT=$(git rev-list --count --since=$EVENTS_BEFORE --until=$EVENTS_AFTER HEAD)
-
-                echo "COMMITS_COUNT=$COMMITS_COUNT" >> $GITHUB_ENV
-
- 
             - name: clone peanutMain
               uses: actions/checkout@v4
               with:
@@ -63,8 +55,7 @@ jobs:
                 echo "□ git status.."
                 git status
 
-                echo "□ Number of commits in this push: $COMMITS_COUNT"
-                if [$COMMITS_COUNT -le 0]; then
+                if git diff --quiet; then
                   echo "□ no commits."
 
                 else
@@ -83,5 +74,5 @@ jobs:
                   git commit -m "$LAST_COMMIT_MSG"
 
                   echo "□ pushing.."
-                  git push origin master
+                  git push
                 fi
