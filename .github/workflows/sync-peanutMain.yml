@@ -17,11 +17,36 @@ jobs:
                 repository: IMOitself/peanutMain
                 path: peanutMain
 
-            - name: navigate to peanutMain
+            - name: override peanutMain with main folders
               run: |
+                echo "□ current directory contents..."
+                ls
+                
+                echo "□ navigate to cloned repo (peanutMain).."
                 cd peanutMain
-                pwd
-                ls -a
+                
+                echo "□ git status.."
                 git status
 
-              
+                peanutMain=$(pwd)
+                
+                echo "□ delete all except the git folder.."
+                ls -a
+                find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} +
+                ls -a
+
+                echo "□ navigate back.."
+                cd ..
+                ls
+
+                echo "□ go to app/src.."
+                cd app/src
+                ls
+
+                echo "□ copy the contents of 'main' folder to peanutMain.."
+                cp -r main/* $peanutMain
+                cd $peanutMain
+                ls -a
+
+                echo "□ git status.."
+                git status
