@@ -2,10 +2,11 @@ name: Sync to peanutMain
 
 on:
     push:
-        branches: master
+        branches: [master, auto]
 
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+            - run: cd app/src/main
+            - run: pwd
