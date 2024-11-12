@@ -22,8 +22,6 @@ jobs:
 
                 echo "COMMITS_COUNT=$COMMITS_COUNT" >> $GITHUB_ENV
 
-                LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
-                echo "LAST_COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
  
             - name: clone peanutMain
               uses: actions/checkout@v4
@@ -69,13 +67,21 @@ jobs:
                 if [$COMMITS_COUNT -le 0]; then
                   echo "□ no commits."
 
-                elif [$COMMITS_COUNT -eq 1]; then
+                else
                   echo "□ committing.."
+
+                  cd ..
+                  LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
+                  echo "$LAST_COMMIT_MSG"
+
+                  
+                  cd $peanutMain
                   git add .
-                  git commit -m $LAST_COMMIT_MSG
+
+                  git config --global user.email "russjonn@gmail.com"
+                  git config --global user.name "IMOitself (github action)"
+                  git commit -m "$LAST_COMMIT_MSG"
 
                   echo "□ pushing.."
                   git push origin master
-
-                else
-                  echo "□ commits is more than one."
+                fi
