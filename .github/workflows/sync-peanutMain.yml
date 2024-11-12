@@ -64,7 +64,7 @@ jobs:
                 git status
 
                 echo "□ Number of commits in this push: $COMMITS_COUNT"
-                if [$COMMITS_COUNT -le 0]; then
+                if [ $COMMITS_COUNT -le 0 ]; then
                   echo "□ no commits."
 
                 else
