@@ -10,7 +10,21 @@ jobs:
         steps:
             - name: clone peanut 
               uses: actions/checkout@v4
-    
+              with:
+                fetch-depth: 0
+
+            - name: get necessary variables
+              run: |
+                # Get the number of commits in this push
+                EVENTS_BEFORE=${{ github.event.before }}
+                EVENTS_AFTER=${{ github.event.after }}
+                COMMITS_COUNT=$(git rev-list --count --since=$EVENTS_BEFORE --until=$EVENTS_AFTER HEAD)
+
+                echo "COMMITS_COUNT=$COMMITS_COUNT" >> $GITHUB_ENV
+
+                LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
+                echo "LAST_COMMIT_MSG=$LAST_COMMIT_MSG" >> $GITHUB_ENV
+ 
             - name: clone peanutMain
               uses: actions/checkout@v4
               with:
@@ -50,3 +64,18 @@ jobs:
 
                 echo "□ git status.."
                 git status
+
+                echo "□ Number of commits in this push: $COMMITS_COUNT"
+                if [$COMMITS_COUNT -le 0]; then
+                  echo "□ no commits."
+
+                elif [$COMMITS_COUNT -eq 1]; then
+                  echo "□ committing.."
+                  git add .
+                  git commit -m $LAST_COMMIT_MSG
+
+                  echo "□ pushing.."
+                  git push origin master
+
+                else
+                  echo "□ commits is more than one."
