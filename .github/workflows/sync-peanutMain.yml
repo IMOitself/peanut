@@ -22,4 +22,8 @@ jobs:
                 cd peanutMain
                 pwd
                 ls
+                echo "\n"
+                cd ..
+                pwd
+                ls
               
