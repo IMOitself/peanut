@@ -11,6 +11,10 @@ jobs:
             - name: clone peanut 
               uses: actions/checkout@v4
     
+            - name: navigate to parent folder
+              run:
+                cd ..
+
             - name: clone peanutMain
               uses: actions/checkout@v4
               with:
@@ -21,8 +25,7 @@ jobs:
               run: |
                 cd peanutMain
                 pwd
-                ls
-                echo "\n"
+                echo ""
                 cd ..
                 pwd
                 ls
