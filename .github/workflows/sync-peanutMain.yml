@@ -8,15 +8,24 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - name: clone peanut 
+              uses: actions/checkout@v4
     
-            - name: navigate to main folder
-              run: |
-                cd ./app/src/main
-                pwd
-            
-            - name: check outside folder
+            - name: clone peanutMain
+              uses: actions/checkout@v4
+              with:
+                repository: IMOitself/peanutMain
+                path: peanutMain
+
+            - name: check folders
               run: |
                 cd
                 pwd
+                echo ""
                 ls
+ 
+                cd work
+                pwd
+                echo ""
+                ls
+              
