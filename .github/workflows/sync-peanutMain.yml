@@ -22,6 +22,8 @@ jobs:
                 path: peanutMain
 
             - name: override peanutMain with main folders
+              env:
+                TOKEN: ${{ secrets.ACTIONS_PAT }}
               run: |
                 echo "□ current directory contents..."
                 ls
@@ -74,5 +76,5 @@ jobs:
                   git commit -m "$LAST_COMMIT_MSG"
 
                   echo "□ pushing.."
-                  git push
+                  git push origin master
                 fi
