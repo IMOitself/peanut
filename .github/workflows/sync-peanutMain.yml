@@ -2,7 +2,9 @@ name: Sync to peanutMain
 
 on:
     push:
-        branches: [master, auto]
+        branches: [master]
+        paths:
+          - 'app/src/main/**'  # Only trigger on changes in this directory
 
 jobs:
     build:
@@ -72,5 +74,5 @@ jobs:
                   git commit -m "$LAST_COMMIT_MSG"
 
                   echo "□ pushing.."
-                  git push origin master
+                  git push
                 fi
