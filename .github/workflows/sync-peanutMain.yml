@@ -20,10 +20,9 @@ jobs:
               with:
                 repository: IMOitself/peanutMain
                 path: peanutMain
+                token: ${{ secrets.ACTIONS_PAT }}
 
             - name: override peanutMain with main folders
-              env:
-                TOKEN: ${{ secrets.ACTIONS_PAT }}
               run: |
                 echo "□ current directory contents..."
                 ls
