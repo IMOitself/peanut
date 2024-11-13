@@ -26,54 +26,73 @@ jobs:
               run: |
                 echo "□ current directory contents..."
                 ls
-                
+
                 echo "□ navigate to cloned repo (peanutMain).."
                 cd peanutMain
                 
                 echo "□ git status.."
                 git status
-
-                peanutMain=$(pwd)
                 
+                peanutMain=$(pwd)
+                                
                 echo "□ delete all except the git folder.."
                 ls -a
                 find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} +
                 ls -a
-
+                
                 echo "□ navigate back.."
                 cd ..
                 ls
-
+                
                 echo "□ go to app/src.."
                 cd app/src
                 ls
-
+                
                 echo "□ copy the contents of 'main' folder to peanutMain.."
                 cp -r main/* $peanutMain
                 cd $peanutMain
                 ls -a
-
+                
                 echo "□ git status.."
                 git status
-
+                
                 if git diff --quiet; then
                   echo "□ no commits."
-
+                
                 else
                   echo "□ committing.."
-
-                  cd ..
-                  LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
-                  echo "$LAST_COMMIT_MSG"
-
-                  
-                  cd $peanutMain
-                  git add .
-
                   git config user.email "russjonn@gmail.com"
                   git config user.name "IMOitself (github action)"
-                  git commit -m "$LAST_COMMIT_MSG"
-
+                
+                  cd ..
+                  # Get the list of changed files in the app/src/main directory
+                  changed_files=$(git diff --name-only HEAD^ HEAD | grep '^app/src/main/')
+                
+                  # Change directory to the peanutMain repository
+                  cd peanutMain
+                
+                  # Get the list of commit messages that modified the changed files
+                  commit_messages=$(git log --format="%s" --no-merges -- $changed_files)
+                
+                  push_number=0
+                
+                  # Get the current push number
+                  if git log --format="%s" --no-merges | grep -q "\\[from peanuts #"; then
+                    push_number=$(git log --format="%s" --no-merges | grep -o "#[0-9]*" | sed 's/#//' | sort -n | tail -n 1)
+                    push_number=$((push_number + 1))
+                  fi
+                
+                  for message in $commit_messages; do
+                    # Check if the commit message already exists in peanutMain with the current push number
+                    if ! git log --format="%s" --no-merges | grep -q "$message \[from peanuts #$push_number\]"; then
+                      # Cherry-pick the commit if it doesn't exist
+                      git cherry-pick $(git rev-list -n 1 --grep="$message" HEAD)
+                
+                      # Add the push number tag to the commit message
+                      git commit --amend -m "$message [from peanuts #$push_number]"
+                    fi
+                  done
+                
                   echo "□ pushing.."
-                  git push origin master
+                  git push
                 fi
