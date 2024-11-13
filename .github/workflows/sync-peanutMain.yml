@@ -70,8 +70,8 @@ jobs:
                   cd $peanutMain
                   git add .
 
-                  git config --global user.email "russjonn@gmail.com"
-                  git config --global user.name "IMOitself (github action)"
+                  git config user.email "russjonn@gmail.com"
+                  git config user.name "IMOitself (github action)"
                   git commit -m "$LAST_COMMIT_MSG"
 
                   echo "□ pushing.."
