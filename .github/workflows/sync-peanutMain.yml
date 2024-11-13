@@ -16,7 +16,7 @@ jobs:
                 fetch-depth: 0
 
             - name: clone peanutMain
-              uses: actions/checkout@v4
+              uses: actions/checkout@v2
               with:
                 repository: IMOitself/peanutMain
                 path: peanutMain
