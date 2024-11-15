@@ -78,7 +78,7 @@ jobs:
                   last_commits=$(git log $last_commit_hash..HEAD --oneline --pretty=format:"%s"| xargs)
                 
                   echo "□ record new last commit hash.."
-                  last_commit_hash="$(git rev-parse -- HEAD)"
+                  last_commit_hash="$(git log -1 --format=%H)"
                   echo "$last_commit_hash" > "$last_commit_hash_file"
                 
                   echo "□ create commit message.."
