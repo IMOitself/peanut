@@ -26,15 +26,15 @@ jobs:
               run: |
                 echo "□ current directory contents..."
                 ls
-
+                
                 echo "□ navigate to cloned repo (peanutMain).."
                 cd peanutMain
                 
                 echo "□ git status.."
-                git status
+                git status --porcelain
                 
                 peanutMain=$(pwd)
-                                
+                
                 echo "□ delete all except the git folder.."
                 ls -a
                 find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} +
@@ -54,45 +54,42 @@ jobs:
                 ls -a
                 
                 echo "□ git status.."
-                git status
+                git status --porcelain
                 
-                if git diff --quiet; then
-                  echo "□ no commits."
+                if [ -z "$(git status --porcelain)" ]; then
+                  echo "□ no changes."
                 
                 else
-                  echo "□ committing.."
+                  echo "□ changes found.."
                   git config user.email "russjonn@gmail.com"
                   git config user.name "IMOitself (github action)"
                 
+                  echo "□ read previous last commit hash.."
                   cd ..
-                  # Get the list of changed files in the app/src/main directory
-                  changed_files=$(git diff --name-only HEAD^ HEAD | grep '^app/src/main/')
                 
-                  # Change directory to the peanutMain repository
-                  cd peanutMain
-                
-                  # Get the list of commit messages that modified the changed files
-                  commit_messages=$(git log --format="%s" --no-merges -- $changed_files)
-                
-                  push_number=0
-                
-                  # Get the current push number
-                  if git log --format="%s" --no-merges | grep -q "\\[from peanuts #"; then
-                    push_number=$(git log --format="%s" --no-merges | grep -o "#[0-9]*" | sed 's/#//' | sort -n | tail -n 1)
-                    push_number=$((push_number + 1))
+                  last_commit_hash_file=".github/workflows/last-commit-hash.txt"
+                  if [ ! -e "$last_commit_hash_file" ]; then
+                    echo "$git rev-parse HEAD^" > "$last_commit_hash_file"
                   fi
                 
-                  for message in $commit_messages; do
-                    # Check if the commit message already exists in peanutMain with the current push number
-                    if ! git log --format="%s" --no-merges | grep -q "$message \[from peanuts #$push_number\]"; then
-                      # Cherry-pick the commit if it doesn't exist
-                      git cherry-pick $(git rev-list -n 1 --grep="$message" HEAD)
+                  last_commit_hash=$(cat "$last_commit_hash_file")
                 
-                      # Add the push number tag to the commit message
-                      git commit --amend -m "$message [from peanuts #$push_number]"
-                    fi
-                  done
+                  echo "□ get commit messages after the commit hash.."
+                  last_commits=$(git log $last_commit_hash..HEAD --oneline --pretty=format:"%s"| xargs)
+                
+                  echo "□ record new last commit hash.."
+                  last_commit_hash="$(git rev-parse HEAD)"
+                  echo "$last_commit_hash" > "$last_commit_hash_file"
+                
+                  echo "□ create commit message.."
+                  commit_message=$(echo -e "$last_commits \n\n (auto sync)")
+                
+                  echo "□ committing.."
+                  cd $peanutMain
+                  git add .
+                  git commit -m "$commit_message"
                 
                   echo "□ pushing.."
+                
                   git push
                 fi
