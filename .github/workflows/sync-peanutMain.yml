@@ -69,7 +69,7 @@ jobs:
                 
                   last_commit_hash_file=".github/workflows/last-commit-hash.txt"
                   if [ ! -e "$last_commit_hash_file" ]; then
-                    echo "$git rev-parse HEAD^" > "$last_commit_hash_file"
+                    echo "$(git rev-parse HEAD^)" > "$last_commit_hash_file"
                   fi
                 
                   last_commit_hash=$(cat "$last_commit_hash_file")
