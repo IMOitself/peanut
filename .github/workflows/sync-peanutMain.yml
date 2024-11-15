@@ -31,49 +31,65 @@ jobs:
                 cd peanutMain
                 
                 echo "□ git status.."
-                git status
-
+                git status --porcelain
+                
                 peanutMain=$(pwd)
                 
                 echo "□ delete all except the git folder.."
                 ls -a
                 find . -maxdepth 1 ! -name '.git' ! -name '.' -exec rm -rf {} +
                 ls -a
-
+                
                 echo "□ navigate back.."
                 cd ..
                 ls
-
+                
                 echo "□ go to app/src.."
                 cd app/src
                 ls
-
+                
                 echo "□ copy the contents of 'main' folder to peanutMain.."
                 cp -r main/* $peanutMain
                 cd $peanutMain
                 ls -a
-
+                
                 echo "□ git status.."
-                git status
-
-                if git diff --quiet; then
-                  echo "□ no commits."
-
+                git status --porcelain
+                
+                if [ -z "$(git status --porcelain)" ]; then
+                  echo "□ no changes."
+                
                 else
-                  echo "□ committing.."
-
-                  cd ..
-                  LAST_COMMIT_MSG=$(git log -1 --pretty=%B)
-                  echo "$LAST_COMMIT_MSG"
-
-                  
-                  cd $peanutMain
-                  git add .
-
+                  echo "□ changes found.."
                   git config user.email "russjonn@gmail.com"
                   git config user.name "IMOitself (github action)"
-                  git commit -m "$LAST_COMMIT_MSG"
-
+                
+                  echo "□ read previous last commit hash.."
+                  cd ..
+                
+                  last_commit_hash_file=".github/workflows/last-commit-hash.txt"
+                  if [ ! -e "$last_commit_hash_file" ]; then
+                    echo "$git rev-parse HEAD^" > "$last_commit_hash_file"
+                  fi
+                
+                  last_commit_hash=$(cat "$last_commit_hash_file")
+                
+                  echo "□ get commit messages after the commit hash.."
+                  last_commits=$(git log $last_commit_hash..HEAD --oneline --pretty=format:"%s"| xargs)
+                
+                  echo "□ record new last commit hash.."
+                  last_commit_hash="$(git rev-parse HEAD)"
+                  echo "$last_commit_hash" > "$last_commit_hash_file"
+                
+                  echo "□ create commit message.."
+                  commit_message=$(echo -e "$last_commits \n\n (auto sync)")
+                
+                  echo "□ committing.."
+                  cd $peanutMain
+                  git add .
+                  git commit -m "$commit_message"
+                
                   echo "□ pushing.."
-                  git push origin master
+                
+                  git push
                 fi
