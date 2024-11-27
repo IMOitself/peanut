@@ -10,6 +10,7 @@ class Editor extends StatelessWidget {
     );
   }
 }
+List<Line> lines = [];
 
 class EditorTextPainter extends CustomPainter {
   @override
@@ -30,9 +31,20 @@ class EditorTextPainter extends CustomPainter {
 
     offsetY += textPainter.height;
     if (offsetY > size.height) break;
+
+    lines.add(Line()
+      ..text = string
+      ..height = textPainter.height
+      ..width = textPainter.width);
     }
   }
-  
+
   @override
   bool shouldRepaint(EditorTextPainter oldDelegate) => false;
+}
+
+class Line {
+  String? text;
+  double? height;
+  double? width;
 }
