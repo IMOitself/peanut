@@ -3,19 +3,25 @@ import 'package:flutter/material.dart';
 class EditorTextPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    const string = 'hi:D!';
+    final string = ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
+    final strings = string.split('\n');
 
-    final textPainter = TextPainter(
-      text: const TextSpan(
-        text: string,
-      ),
-      textDirection: TextDirection.ltr,
-    );
+    double offsetY = 0;
+    for (String string in strings){
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: string,
+          style: const TextStyle(fontSize: 50)),
+        textDirection: TextDirection.ltr,
+      )..layout();
 
-    textPainter.layout();
-    textPainter.paint(canvas, const Offset(0, 0));
+    textPainter.paint(canvas, Offset(0, offsetY));
+
+    offsetY += textPainter.height;
+    if (offsetY > size.height) break;
+    }
   }
-
+  
   @override
   bool shouldRepaint(EditorTextPainter oldDelegate) => false;
 }
