@@ -10,12 +10,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SizedBox.expand(
-        child: CustomPaint(
-          painter: EditorTextPainter(),
-        ),
-      ),
+    return const MaterialApp(
+      home: SizedBox.expand(child: Editor()),
     );
   }
 }

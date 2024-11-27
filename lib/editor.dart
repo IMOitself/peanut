@@ -1,5 +1,16 @@
 import 'package:flutter/material.dart';
 
+class Editor extends StatelessWidget {
+  const Editor({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: EditorTextPainter(),
+    );
+  }
+}
+
 class EditorTextPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -7,7 +18,7 @@ class EditorTextPainter extends CustomPainter {
     final strings = string.split('\n');
 
     double offsetY = 0;
-    for (String string in strings){
+    for (String string in strings) {
       final textPainter = TextPainter(
         text: TextSpan(
           text: string,
@@ -15,7 +26,7 @@ class EditorTextPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       )..layout();
 
-    textPainter.paint(canvas, Offset(0, offsetY));
+      textPainter.paint(canvas, Offset(0, offsetY));
 
     offsetY += textPainter.height;
     if (offsetY > size.height) break;
