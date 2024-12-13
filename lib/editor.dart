@@ -8,10 +8,18 @@ class Editor extends StatefulWidget {
 }
 
 class _EditorState extends State<Editor> {
+  int counter = 0;
   
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: _EditorTextPainter());
+    return GestureDetector(
+      child: CustomPaint(painter: _EditorTextPainter(counter)),
+      onTap: () {
+        setState(() {
+          counter++;
+        });
+      },
+    );
   }
 }
 
@@ -24,10 +32,15 @@ class Line {
 }
 
 class _EditorTextPainter extends CustomPainter {
+  final int counter;
+
+  _EditorTextPainter(this.counter);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final string = ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
+    String string = '$counter\n';
+    string += ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
+
     final strings = string.split('\n');
 
     double offsetY = 0;
@@ -50,5 +63,7 @@ class _EditorTextPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_EditorTextPainter oldDelegate) => false;
+  bool shouldRepaint(_EditorTextPainter oldDelegate) {
+    return oldDelegate.counter != counter;
+  }
 }
