@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+List<Line> lines = [];
+int currLineNumber = 0;
+
+class Line {
+  String? text;
+  double? height;
+  double? width;
+}
+
 class Editor extends StatefulWidget {
   const Editor({super.key});
 
@@ -8,37 +17,38 @@ class Editor extends StatefulWidget {
 }
 
 class _EditorState extends State<Editor> {
-  int counter = 0;
-  
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: CustomPaint(painter: _EditorTextPainter(counter)),
-      onTap: () {
+      child: CustomPaint(painter: _EditorTextPainter()),
+      onTapDown: (details) {
         setState(() {
-          counter++;
+          updateCurrLineNumber(details.localPosition);
         });
       },
     );
   }
-}
 
-List<Line> lines = [];
+  void updateCurrLineNumber(Offset position) {
+    double offsetTop = 0;
+    double tapY = position.dy;
 
-class Line {
-  String? text;
-  double? height;
-  double? width;
+    for (Line line in lines) {
+      double lineBottom = offsetTop + line.height!;
+      if (tapY < lineBottom) {
+        currLineNumber = lines.indexOf(line);
+        break;
+      }
+
+      offsetTop += line.height!;
+    }
+  }
 }
 
 class _EditorTextPainter extends CustomPainter {
-  final int counter;
-
-  _EditorTextPainter(this.counter);
-
   @override
   void paint(Canvas canvas, Size size) {
-    String string = '$counter\n';
+    String string = 'line number: $currLineNumber\n';
     string += ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
 
     final strings = string.split('\n');
@@ -63,7 +73,5 @@ class _EditorTextPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_EditorTextPainter oldDelegate) {
-    return oldDelegate.counter != counter;
-  }
+  bool shouldRepaint(_EditorTextPainter oldDelegate) => true;
 }
