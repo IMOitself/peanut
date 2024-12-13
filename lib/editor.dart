@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
 
-class Editor extends StatelessWidget {
+class Editor extends StatefulWidget {
   const Editor({super.key});
 
   @override
+  State<Editor> createState() => _EditorState();
+}
+
+class _EditorState extends State<Editor> {
+  
+  @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: EditorTextPainter());
+    return CustomPaint(painter: _EditorTextPainter());
   }
 }
 
 List<Line> lines = [];
 
-class EditorTextPainter extends CustomPainter {
+class Line {
+  String? text;
+  double? height;
+  double? width;
+}
+
+class _EditorTextPainter extends CustomPainter {
+
   @override
   void paint(Canvas canvas, Size size) {
     final string = ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
@@ -37,11 +50,5 @@ class EditorTextPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(EditorTextPainter oldDelegate) => false;
-}
-
-class Line {
-  String? text;
-  double? height;
-  double? width;
+  bool shouldRepaint(_EditorTextPainter oldDelegate) => false;
 }
