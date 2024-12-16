@@ -1,12 +1,40 @@
 import 'package:flutter/material.dart';
 
-List<Line> lines = [];
-int currLineNumber = 0;
-
 class Line {
   String? text;
   double? height;
   double? width;
+
+  static List<Line> lines = [];
+  static int currLineIndex = 0;
+
+  static void updateLines(int i, String s, double? h, double? w) {
+    Line line = Line()
+      ..text = s
+      ..height = h
+      ..width = w;
+    
+    if (i >= lines.length) {
+      lines.add(line);
+    } else {
+      lines[i] = line;
+    }
+  }
+
+  static void setCurrLineIndex(Offset tapPosition) {
+    double offsetTop = 0;
+    double tapY = tapPosition.dy;
+
+    for (Line line in lines) {
+      double lineBottom = offsetTop + line.height!;
+      if (tapY < lineBottom) {
+        currLineIndex = lines.indexOf(line);
+        break;
+      }
+
+      offsetTop += line.height!;
+    }
+  }
 }
 
 class Editor extends StatefulWidget {
@@ -23,37 +51,25 @@ class _EditorState extends State<Editor> {
       child: CustomPaint(painter: _EditorTextPainter()),
       onTapDown: (details) {
         setState(() {
-          updateCurrLineNumber(details.localPosition);
+          Line.setCurrLineIndex(details.localPosition);
         });
       },
     );
-  }
-
-  void updateCurrLineNumber(Offset position) {
-    double offsetTop = 0;
-    double tapY = position.dy;
-
-    for (Line line in lines) {
-      double lineBottom = offsetTop + line.height!;
-      if (tapY < lineBottom) {
-        currLineNumber = lines.indexOf(line);
-        break;
-      }
-
-      offsetTop += line.height!;
-    }
   }
 }
 
 class _EditorTextPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    String string = 'line number: $currLineNumber\n';
+    int currLineIndex = Line.currLineIndex;
+    String string = 'line number: $currLineIndex\n';
     string += ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
 
     final strings = string.split('\n');
 
     double offsetY = 0;
+    int lineIndex = 0;
+
     for (String string in strings) {
       final textPainter = TextPainter(
         text: TextSpan(text: string, style: const TextStyle(fontSize: 50)),
@@ -65,10 +81,8 @@ class _EditorTextPainter extends CustomPainter {
       offsetY += textPainter.height;
       if (offsetY > size.height) break;
 
-      lines.add(Line()
-        ..text = string
-        ..height = textPainter.height
-        ..width = textPainter.width);
+      Line.updateLines(lineIndex, string, textPainter.height, textPainter.width);
+      lineIndex++;
     }
   }
 
