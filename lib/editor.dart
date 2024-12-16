@@ -13,7 +13,7 @@ class Line {
       ..text = s
       ..height = h
       ..width = w;
-    
+
     if (i >= lines.length) {
       lines.add(line);
     } else {
@@ -21,7 +21,8 @@ class Line {
     }
   }
 
-  static void setCurrLineIndex(Offset tapPosition) {
+  static void setCurrLineIndex(TapDownDetails details) {
+    Offset tapPosition = details.localPosition;
     double offsetTop = 0;
     double tapY = tapPosition.dy;
 
@@ -51,7 +52,7 @@ class _EditorState extends State<Editor> {
       child: CustomPaint(painter: _EditorTextPainter()),
       onTapDown: (details) {
         setState(() {
-          Line.setCurrLineIndex(details.localPosition);
+          Line.setCurrLineIndex(details);
         });
       },
     );
@@ -81,7 +82,8 @@ class _EditorTextPainter extends CustomPainter {
       offsetY += textPainter.height;
       if (offsetY > size.height) break;
 
-      Line.updateLines(lineIndex, string, textPainter.height, textPainter.width);
+      Line.updateLines(
+          lineIndex, string, textPainter.height, textPainter.width);
       lineIndex++;
     }
   }
