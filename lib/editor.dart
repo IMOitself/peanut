@@ -11,8 +11,12 @@ class Editor extends StatefulWidget {
 class _EditorState extends State<Editor> {
   @override
   Widget build(BuildContext context) {
+    int currLineIndex = Line.currLineIndex;
+    String string = 'line number: $currLineIndex\n';
+    string += ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
+
     return GestureDetector(
-      child: CustomPaint(painter: _EditorTextPainter()),
+      child: CustomPaint(painter: _EditorTextPainter(string)),
       onTapDown: (details) {
         setState(() {
           Line.setCurrLineIndex(details);
@@ -23,12 +27,12 @@ class _EditorState extends State<Editor> {
 }
 
 class _EditorTextPainter extends CustomPainter {
+  _EditorTextPainter(this.string);
+
+  final String string;
+
   @override
   void paint(Canvas canvas, Size size) {
-    int currLineIndex = Line.currLineIndex;
-    String string = 'line number: $currLineIndex\n';
-    string += ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
-
     final strings = string.split('\n');
 
     double offsetY = 0;
