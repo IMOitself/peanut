@@ -50,7 +50,7 @@ class _EditorPainter extends CustomPainter {
       if (offsetY > size.height) break;
 
       Line.updateLines(
-          lineIndex, lineString, textPainter.height, textPainter.width);
+          lineIndex, lineString, textPainter.width, textPainter.height);
       lineIndex++;
     }
   }

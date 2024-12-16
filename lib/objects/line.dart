@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 
 class Line {
   String? text;
-  double? height;
   double? width;
+  double? height;
 
   static List<Line> lines = [];
   static int currLineIndex = 0;
 
-  static void updateLines(int i, String s, double? h, double? w) {
+  static void updateLines(int i, String s, double? w, double? h) {
     Line line = Line()
       ..text = s
-      ..height = h
-      ..width = w;
+      ..width = w
+      ..height = h;
 
     if (i >= lines.length) {
       lines.add(line);
