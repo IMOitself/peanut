@@ -44,6 +44,14 @@ class _EditorPainter extends CustomPainter {
         textDirection: TextDirection.ltr,
       )..layout();
 
+      // HIGHLIGHT
+      if (Line.currLineIndex == lineIndex) {
+        canvas.drawRect(
+          Rect.fromLTWH(0, offsetY, size.width, textPainter.height),
+          Paint()..color = Colors.red,
+        );
+      }
+      // TEXT
       textPainter.paint(canvas, Offset(0, offsetY));
 
       offsetY += textPainter.height;
