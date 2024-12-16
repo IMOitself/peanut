@@ -25,15 +25,17 @@ class Line {
     Offset tapPosition = details.localPosition;
     double offsetTop = 0;
     double tapY = tapPosition.dy;
+    int i = 0;
 
     for (Line line in lines) {
       double lineBottom = offsetTop + line.height!;
       if (tapY < lineBottom) {
-        currLineIndex = lines.indexOf(line);
+        currLineIndex = i;
         break;
       }
 
       offsetTop += line.height!;
+      i++;
     }
   }
 }
