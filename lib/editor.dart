@@ -16,7 +16,7 @@ class _EditorState extends State<Editor> {
     string += ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
 
     return GestureDetector(
-      child: CustomPaint(painter: _EditorTextPainter(string)),
+      child: CustomPaint(painter: _EditorPainter(string)),
       onTapDown: (details) {
         setState(() {
           Line.setCurrLineIndex(details);
@@ -26,21 +26,21 @@ class _EditorState extends State<Editor> {
   }
 }
 
-class _EditorTextPainter extends CustomPainter {
-  _EditorTextPainter(this.string);
+class _EditorPainter extends CustomPainter {
+  _EditorPainter(this.string);
 
   final String string;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final strings = string.split('\n');
+    final lineStrings = string.split('\n');
 
     double offsetY = 0;
     int lineIndex = 0;
 
-    for (String string in strings) {
+    for (String lineString in lineStrings) {
       final textPainter = TextPainter(
-        text: TextSpan(text: string, style: const TextStyle(fontSize: 50)),
+        text: TextSpan(text: lineString, style: const TextStyle(fontSize: 50)),
         textDirection: TextDirection.ltr,
       )..layout();
 
@@ -50,11 +50,11 @@ class _EditorTextPainter extends CustomPainter {
       if (offsetY > size.height) break;
 
       Line.updateLines(
-          lineIndex, string, textPainter.height, textPainter.width);
+          lineIndex, lineString, textPainter.height, textPainter.width);
       lineIndex++;
     }
   }
 
   @override
-  bool shouldRepaint(_EditorTextPainter oldDelegate) => true;
+  bool shouldRepaint(_EditorPainter oldDelegate) => true;
 }
