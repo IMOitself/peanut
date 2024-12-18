@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'objects/line.dart';
 
+String string = '';
+
 class Editor extends StatefulWidget {
-  const Editor({super.key});
+  Editor(String s, {super.key}){
+    string = s;
+  }
 
   @override
   State<Editor> createState() => _EditorState();
@@ -11,12 +15,8 @@ class Editor extends StatefulWidget {
 class _EditorState extends State<Editor> {
   @override
   Widget build(BuildContext context) {
-    int currLineIndex = Line.currLineIndex;
-    String string = 'line number: $currLineIndex\n';
-    string += ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
-
     return GestureDetector(
-      child: CustomPaint(painter: _EditorPainter(string)),
+      child: CustomPaint(painter: _EditorPainter()),
       onTapDown: (details) {
         setState(() {
           Line.setCurrLineIndex(details);
@@ -27,10 +27,6 @@ class _EditorState extends State<Editor> {
 }
 
 class _EditorPainter extends CustomPainter {
-  _EditorPainter(this.string);
-
-  final String string;
-
   @override
   void paint(Canvas canvas, Size size) {
     final lineStrings = string.split('\n');
@@ -51,8 +47,17 @@ class _EditorPainter extends CustomPainter {
           Paint()..color = Colors.red,
         );
       }
+
       // TEXT
       textPainter.paint(canvas, Offset(0, offsetY));
+
+      // DEBUG
+      int currentLine = Line.currLineIndex;
+      int linesSize = Line.lines.length;
+      TextPainter(
+        text: TextSpan(text: '$currentLine\n$linesSize', style: const TextStyle(fontSize: 30)),
+        textDirection: TextDirection.rtl,
+      )..layout()..paint(canvas, Offset(size.width - 50, size.height / 2));
 
       offsetY += textPainter.height;
       if (offsetY > size.height) break;

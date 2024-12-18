@@ -10,8 +10,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SizedBox.expand(child: Editor()),
+    string = ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
+
+    return MaterialApp(
+      home: SizedBox.expand(child: Editor(string)),
     );
   }
 }
