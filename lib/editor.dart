@@ -36,7 +36,7 @@ class _EditorPainter extends CustomPainter {
 
     for (String lineString in lineStrings) {
       final textPainter = TextPainter(
-        text: TextSpan(text: lineString, style: const TextStyle(fontSize: 50)),
+        text: TextSpan(text: lineString, style: const TextStyle(fontSize: 30)),
         textDirection: TextDirection.ltr,
       )..layout();
 
@@ -55,8 +55,8 @@ class _EditorPainter extends CustomPainter {
       int currentLine = Line.currLineIndex;
       int linesSize = Line.lines.length;
       TextPainter(
-        text: TextSpan(text: '$currentLine\n$linesSize', style: const TextStyle(fontSize: 30)),
-        textDirection: TextDirection.rtl,
+        text: TextSpan(text: '$currentLine\n$linesSize', style: const TextStyle(fontSize: 20)),
+        textDirection: TextDirection.ltr,
       )..layout()..paint(canvas, Offset(size.width - 50, size.height / 2));
 
       offsetY += textPainter.height;

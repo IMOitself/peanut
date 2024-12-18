@@ -10,7 +10,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    string = ('hi\nthere\nhow\nare\nyou?\n' * 100).trimRight();
+    string = 'last\nrizzmas\ni\ngave\nyou\nmy\ngyatt\nbut\nthe\nvery\nnext\nday\ni\ngot\nfanum\ntax';
 
     return MaterialApp(
       home: SizedBox.expand(child: Editor(string)),
