@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'objects/line.dart';
 
-String string = '';
+String text = '';
 
 class Editor extends StatefulWidget {
-  Editor(String s, {super.key}){
-    string = s;
+  Editor(String s, {super.key}) {
+    text = s;
   }
 
   @override
@@ -14,25 +14,18 @@ class Editor extends StatefulWidget {
 
 class _EditorState extends State<Editor> {
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      child: CustomPaint(painter: _EditorPainter()),
-      onTapDown: (details) {
-        setState(() {
-          Line.setCurrLineIndex(details);
-        });
-      },
-    );
-  }
+  Widget build(BuildContext context) => GestureDetector(
+        onTapDown: Line.setCurrLineIndex,
+        child: CustomPaint(painter: _EditorPainter()),
+      );
 }
 
 class _EditorPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final lineStrings = string.split('\n');
-
     double offsetY = 0;
     int lineIndex = 0;
+    final lineStrings = text.split('\n');
 
     for (String lineString in lineStrings) {
       final textPainter = TextPainter(
@@ -51,13 +44,7 @@ class _EditorPainter extends CustomPainter {
       // TEXT
       textPainter.paint(canvas, Offset(0, offsetY));
 
-      // DEBUG
-      int currentLine = Line.currLineIndex;
-      int linesSize = Line.lines.length;
-      TextPainter(
-        text: TextSpan(text: '$currentLine\n$linesSize', style: const TextStyle(fontSize: 20)),
-        textDirection: TextDirection.ltr,
-      )..layout()..paint(canvas, Offset(size.width - 50, size.height / 2));
+      debug(canvas, size);
 
       offsetY += textPainter.height;
       if (offsetY > size.height) break;
@@ -70,4 +57,15 @@ class _EditorPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_EditorPainter oldDelegate) => true;
+
+  void debug(Canvas canvas, Size size) {
+    TextPainter(
+      text: TextSpan(
+          text: '${Line.currLineIndex}\n${Line.lines.length}',
+          style: const TextStyle(fontSize: 20)),
+      textDirection: TextDirection.ltr,
+    )
+      ..layout()
+      ..paint(canvas, Offset(size.width - 50, size.height / 2));
+  }
 }
